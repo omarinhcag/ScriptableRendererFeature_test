@@ -8,14 +8,14 @@ public class MaterialChanger : MonoBehaviour
     [SerializeField] string axisName;
     [SerializeField] string propertyName;
 
-    Renderer rend;
+    Renderer[] renderers;
     MaterialPropertyBlock mpb;
     int _id;
     float currentValue;
 
     void Start()
     {
-        rend = GetComponent<Renderer>();
+        renderers = GetComponentsInChildren<Renderer>();
         mpb = new MaterialPropertyBlock();
         _id = Shader.PropertyToID(propertyName);
     }
@@ -28,10 +28,13 @@ public class MaterialChanger : MonoBehaviour
         float input = Input.GetAxis(axisName);
         if (input != 0)
         {
-            rend.GetPropertyBlock(mpb);
-            currentValue = Mathf.Clamp01(currentValue + input * Time.deltaTime);
-            mpb.SetFloat(_id, currentValue);
-            rend.SetPropertyBlock(mpb);
+            foreach (var rend in renderers)
+            {
+                rend.GetPropertyBlock(mpb);
+                currentValue = Mathf.Clamp01(currentValue + input * Time.deltaTime);
+                mpb.SetFloat(_id, currentValue);
+                rend.SetPropertyBlock(mpb);
+            }
         }
     }
 }
