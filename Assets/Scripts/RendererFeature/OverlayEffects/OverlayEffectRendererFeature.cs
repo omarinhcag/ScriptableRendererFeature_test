@@ -33,7 +33,8 @@ public class OverlayEffectRendererFeature : ScriptableRendererFeature
 
     #region Render pass definition
     private Camera lastSelectedCamera;
-    private List<OverlayDrawer> drawers = new List<OverlayDrawer>();
+    //private List<OverlayDrawer> drawers = new List<OverlayDrawer>();
+    private OverlayDrawer _cachedDrawer;
 
     class OverlayEffectRenderPass : ScriptableRenderPass
     {
@@ -66,11 +67,12 @@ public class OverlayEffectRendererFeature : ScriptableRendererFeature
             {
                 // Check if effect is valid
                 if (eff == null) continue;
+                // Check if object must be applied to this camera.
+                if (!OverlayUtils.CheckLayer(eff.Layer, Drawer.EffectMask)) continue;
                 // Get list of overlay objects.
                 var objs = OverlayObject.GetList(eff.OverlayId);
-                // Filter by active/visible
+                // Filter by visibility
                 GetAllVisible(camera, objs);
-
                 // Already filtering cameras by drawer inclusion and objects by overlay component adding.
                 //OverlayUtils.MaskByLayer(camera, eff.mask, _cachedObjects);
 
@@ -120,10 +122,12 @@ public class OverlayEffectRendererFeature : ScriptableRendererFeature
     #region Render pass process
     private bool GetOverlayDrawers(RenderingData renderingData)
     {
-        drawers.Clear();
+        //drawers.Clear();
         var camera = renderingData.cameraData.camera;
-        camera.GetComponents(drawers);
-        if (drawers.Count == 0)
+        //camera.GetComponents(drawers);
+        _cachedDrawer = OverlayDrawer.FindDrawer(camera);
+        //if (drawers.Count == 0)
+        if (_cachedDrawer == null)
         {
             if (renderingData.cameraData.isSceneViewCamera)
             {
@@ -135,7 +139,7 @@ public class OverlayEffectRendererFeature : ScriptableRendererFeature
                 // If no corresponding camera was found, return false.
                 if (camera == null) return false;
                 // Otherwise cache the drawers.
-                else camera.GetComponents(drawers);
+                else _cachedDrawer = OverlayDrawer.FindDrawer(camera); //camera.GetComponents(drawers);
             }
             else return false;
         } else
@@ -170,25 +174,22 @@ public class OverlayEffectRendererFeature : ScriptableRendererFeature
         // Depth target check.
         var shouldUseDepthTarget = renderingData.cameraData.requiresDepthTexture && renderingData.cameraData.cameraTargetDescriptor.msaaSamples <= 1 && !renderingData.cameraData.isSceneViewCamera;
         // Iter through each overlay drawer
-        foreach (var drawer in drawers)
-        {
-            var overlay = pool.Get();
-            overlay.Drawer = drawer;
-            // Should use depth stuff.
-            overlay.UseColorTargetForDepth =
+        var overlay = pool.Get();
+        overlay.Drawer = _cachedDrawer;
+        // Should use depth stuff.
+        overlay.UseColorTargetForDepth =
 #if UNITY_2019_3_OR_NEWER && !UNITY_2019_3_0 && !UNITY_2019_3_1 && !UNITY_2019_3_2 && !UNITY_2019_3_3 && !UNITY_2019_3_4 && !UNITY_2019_3_5 && !UNITY_2019_3_6 && !UNITY_2019_3_7 && !UNITY_2019_3_8
-                (additionalCameraData == null || activeStackCount == 0 && additionalCameraData.renderType != CameraRenderType.Overlay) &&
+            (additionalCameraData == null || activeStackCount == 0 && additionalCameraData.renderType != CameraRenderType.Overlay) &&
 #endif
-                !shouldUseDepthTarget;
-            // Set renderer.
-            overlay.Renderer = renderer;
-            // Set settings reference.
-            overlay.Settings = settings;
-            // Set render pass event.
-            overlay.renderPassEvent = settings.renderEvent;
-            // Enqueue pass
-            renderer.EnqueuePass(overlay);
-        }
+            !shouldUseDepthTarget;
+        // Set renderer.
+        overlay.Renderer = renderer;
+        // Set settings reference.
+        overlay.Settings = settings;
+        // Set render pass event.
+        overlay.renderPassEvent = settings.renderEvent;
+        // Enqueue pass
+        renderer.EnqueuePass(overlay);
         // On finish
         pool.ReleaseAll();
     }

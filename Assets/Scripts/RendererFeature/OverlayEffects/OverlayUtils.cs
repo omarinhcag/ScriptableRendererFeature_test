@@ -30,4 +30,9 @@ public static class OverlayUtils
         objList.Clear();
         objList.AddRange(filter);
     }
+
+    internal static bool CheckLayer(int layer, LayerMask effectMask)
+    {
+        return (((1 << layer) & effectMask) != 0);
+    }
 }
