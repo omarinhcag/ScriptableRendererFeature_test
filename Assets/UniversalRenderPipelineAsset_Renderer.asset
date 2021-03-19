@@ -119,5 +119,5 @@ MonoBehaviour:
   settings:
     overlayEffects:
     - {fileID: 11400000, guid: 001161170a9453c4b94e0aeb18265de8, type: 2}
-    - {fileID: 11400000, guid: 001161170a9453c4b94e0aeb18265de8, type: 2}
+    - {fileID: 11400000, guid: 657f06068f0dfb144a8d35e748dc2d44, type: 2}
     renderEvent: 550

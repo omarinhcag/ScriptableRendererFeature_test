@@ -267,6 +267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28762ac37cd3b84408fe708b93484a22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  appliedEffects: 
   rendererList:
   - {fileID: 870034045}
   - {fileID: 870034044}
@@ -985,3 +986,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 963194227}
+  effectMask:
+    serializedVersion: 2
+    m_Bits: 4294967295

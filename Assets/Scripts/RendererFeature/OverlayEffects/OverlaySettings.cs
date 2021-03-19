@@ -9,7 +9,7 @@ public class OverlaySettings : ScriptableObject
     [Tooltip("Identifier for this overlay effect.")] public string overlayId;
     [Tooltip("Material that will be applied as overlay.")] public Material material;
     [Tooltip("Material's shader pass. Set to -1 to apply all passes.")] public int materialPassIndex = -1;
-    [Tooltip("Layer ID for the effect.")] public int Layer = -1;
+    [Layer] [Tooltip("Layer ID for the effect.")] public int Layer = 0;
     
     [HideInInspector] [SerializeField] private int overlayIdHash;
     public int OverlayId { get { return overlayIdHash; } }

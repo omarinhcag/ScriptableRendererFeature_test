@@ -10,12 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b86bfabf0bf42fb41823d359ee097da9, type: 3}
-  m_Name: Effect1
+  m_Name: Effect2
   m_EditorClassIdentifier: 
   overlayId: RedTint
   material: {fileID: 2100000, guid: 2e30177e87b0b6741a802e3d0842a014, type: 2}
   materialPassIndex: -1
-  mask:
-    serializedVersion: 2
-    m_Bits: 72
+  Layer: 6
   overlayIdHash: 990

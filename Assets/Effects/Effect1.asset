@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: Effect1
   m_EditorClassIdentifier: 
   overlayId: RedTint
-  material: {fileID: 2100000, guid: 2e30177e87b0b6741a802e3d0842a014, type: 2}
+  material: {fileID: 2100000, guid: 0d8b8e215a45817439897be77f261328, type: 2}
   materialPassIndex: -1
-  mask:
-    serializedVersion: 2
-    m_Bits: 72
+  Layer: 6
   overlayIdHash: 990
